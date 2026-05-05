@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPL 2026 – Tennis Ball League</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00e676;
+    --green-dark: #00b248;
+    --gold: #ffd600;
+    --red: #ff1744;
+    --dark: #060d06;
+    --dark2: #0d1a0d;
+    --dark3: #132113;
+    --surface: #162416;
+    --surface2: #1e321e;
+    --text: #e8f5e9;
+    --muted: #8aad8a;
+    --border: rgba(0,230,118,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(6,13,6,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 62px;
+  }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--green); letter-spacing: 3px; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: .85rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; transition: color .2s; }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta { background: var(--green); color: var(--dark); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .95rem; letter-spacing: 2px; padding: 9px 22px; border: none; cursor: pointer; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); text-decoration: none; display: inline-block; }
+  .nav-cta:hover { background: var(--gold); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #030a03 0%, #0a1a08 40%, #071507 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding-top: 62px;
+    text-align: center;
+  }
+  .hero-bg-lines {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: .35;
+  }
+  .hero-glow {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,230,118,.13) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block; background: var(--green); color: var(--dark);
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+    font-size: .78rem; letter-spacing: 3px; padding: 5px 16px;
+    clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+    margin-bottom: 22px; animation: fadeUp .6s ease both;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: .92; letter-spacing: 4px;
+    animation: fadeUp .7s .1s ease both;
+  }
+  .hero-title span { color: var(--green); }
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    letter-spacing: 5px; color: var(--muted); margin-top: 10px;
+    animation: fadeUp .7s .2s ease both;
+  }
+  .hero-meta {
+    margin-top: 30px; display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .hero-meta-item { text-align: center; }
+  .hero-meta-item .val { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--gold); line-height: 1; }
+  .hero-meta-item .lbl { font-size: .75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .hero-btns { margin-top: 38px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeUp .7s .4s ease both; }
+  .btn-primary {
+    background: var(--green); color: var(--dark); font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900; font-size: 1.05rem; letter-spacing: 3px; padding: 14px 36px;
+    border: none; cursor: pointer; text-transform: uppercase;
+    clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+    text-decoration: none; display: inline-block; transition: all .2s;
+  }
+  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--green);
+    border: 1.5px solid var(--green);
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem;
+    letter-spacing: 3px; padding: 13px 34px; cursor: pointer;
+    text-transform: uppercase; text-decoration: none; display: inline-block; transition: all .2s;
+  }
+  .btn-outline:hover { background: rgba(0,230,118,.1); }
+  .hero-scroll { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; }
+  .hero-scroll span { display: block; width: 22px; height: 22px; border-right: 2px solid var(--green); border-bottom: 2px solid var(--green); transform: rotate(45deg); margin: -6px auto; }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 80px 5vw; }
+  .sec-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .75rem; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+  .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1; margin-bottom: 10px; }
+  .sec-title span { color: var(--green); }
+  .sec-divider { width: 56px; height: 3px; background: var(--green); margin-bottom: 40px; }
+  .center { text-align: center; }
+  .center .sec-divider { margin: 12px auto 40px; }
+
+  /* ─── OVERVIEW CARDS ─── */
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 40px; }
+  .ov-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 22px;
+    position: relative; overflow: hidden;
+    transition: transform .2s, border-color .2s;
+  }
+  .ov-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--green);
+  }
+  .ov-card:hover { transform: translateY(-4px); border-color: var(--green); }
+  .ov-card .icon { font-size: 2rem; margin-bottom: 12px; }
+  .ov-card .label { font-size: .72rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .ov-card .value { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--text); }
+  .ov-card .value.big { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); }
+
+  /* ─── PRIZES ─── */
+  #prizes { background: var(--dark2); }
+  .prize-row { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+  .prize-card {
+    flex: 1; min-width: 220px; max-width: 340px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px 28px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .prize-card.winner { border-color: var(--gold); }
+  .prize-card.winner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(255,214,0,.08) 0%, transparent 60%); }
+  .prize-card .trophy { font-size: 3.5rem; margin-bottom: 16px; }
+  .prize-card .prize-lbl { font-size: .75rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .prize-card .prize-val { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+  .prize-card .prize-desc { margin-top: 6px; font-size: .85rem; color: var(--muted); }
+
+  /* ─── RULES ─── */
+  #rules { background: var(--dark3); }
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+  .rule-block { background: var(--surface); border: 1px solid var(--border); padding: 28px; }
+  .rule-block h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; letter-spacing: 2px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .rule-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .rule-block ul li { font-size: .88rem; color: var(--muted); padding-left: 16px; position: relative; line-height: 1.5; }
+  .rule-block ul li::before { content: '▸'; position: absolute; left: 0; color: var(--green); }
+
+  /* ─── VENUES ─── */
+  #venues { background: var(--dark2); }
+  .venue-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .venue-card {
+    flex: 1; min-width: 240px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .venue-card .vnum { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--border); line-height: 1; }
+  .venue-card .vname { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--text); }
+  .venue-card .vloc { font-size: .83rem; color: var(--muted); }
+
+  /* ─── REGISTRATION SECTION ─── */
+  #register {
+    background: var(--dark);
+    padding: 80px 5vw;
+  }
+  .reg-container {
+    max-width: 780px; margin: 0 auto;
+  }
+  .step-indicator {
+    display: flex; gap: 0; margin-bottom: 40px; border: 1px solid var(--border); overflow: hidden;
+  }
+  .step {
+    flex: 1; padding: 14px 10px; text-align: center;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: .85rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); background: var(--surface);
+    border-right: 1px solid var(--border); cursor: pointer;
+    transition: all .2s; position: relative;
+  }
+  .step:last-child { border-right: none; }
+  .step.active { background: var(--green); color: var(--dark); }
+  .step.done { background: var(--dark3); color: var(--green); }
+  .step .snum { font-size: 1.2rem; display: block; line-height: 1; }
+
+  .form-page { display: none; }
+  .form-page.active { display: block; animation: fadeIn .4s ease; }
+
+  .form-section-title {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 1.15rem; letter-spacing: 2px; color: var(--green);
+    text-transform: uppercase; margin-bottom: 22px; margin-top: 30px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .form-section-title:first-child { margin-top: 0; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-group label {
+    font-size: .75rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .form-group label .req { color: var(--red); margin-left: 2px; }
+  .form-group input, .form-group select, .form-group textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 11px 14px;
+    font-family: 'Barlow', sans-serif; font-size: .92rem;
+    outline: none; width: 100%;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%2300e676' d='M6 8 0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--green);
+  }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(138,173,138,.4); }
+  .form-group .hint { font-size: .75rem; color: var(--muted); margin-top: 3px; }
+
+  .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .player-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .player-card .pc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: .72rem; letter-spacing: 1px; color: var(--green); text-transform: uppercase; font-weight: 700;
+  }
+  .player-role-badge {
+    font-size: .65rem; background: rgba(0,230,118,.15); color: var(--green);
+    padding: 2px 7px; letter-spacing: 1px;
+  }
+
+  .fee-summary {
+    background: var(--surface);
+    border: 1px solid var(--green);
+    padding: 28px; margin: 28px 0;
+  }
+  .fee-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .92rem; }
+  .fee-row:last-child { border-bottom: none; font-weight: 700; font-size: 1.05rem; color: var(--gold); padding-top: 14px; }
+  .fee-row .lbl { color: var(--muted); }
+  .fee-row .val { color: var(--text); }
+
+  /* ─── BANK DETAILS ─── */
+  .bank-box {
+    background: var(--surface2);
+    border: 1px solid var(--gold);
+    padding: 30px;
+    position: relative; overflow: hidden;
+  }
+  .bank-box::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--green));
+  }
+  .bank-title {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 1rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+  }
+  .bank-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .bd-item .bd-lbl { font-size: .7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .bd-item .bd-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--text); }
+  .bank-notice {
+    margin-top: 20px; padding: 14px; background: rgba(255,214,0,.07);
+    border-left: 3px solid var(--gold); font-size: .83rem; color: var(--muted); line-height: 1.6;
+  }
+  .bank-notice strong { color: var(--gold); }
+
+  .upload-box {
+    border: 1.5px dashed var(--border);
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: border-color .2s; background: var(--surface);
+  }
+  .upload-box:hover { border-color: var(--green); }
+  .upload-box .up-icon { font-size: 2rem; margin-bottom: 8px; }
+  .upload-box .up-text { font-size: .85rem; color: var(--muted); }
+  .upload-box .up-text span { color: var(--green); }
+  .upload-box input[type=file] { display: none; }
+
+  .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+  .btn-next, .btn-prev, .btn-submit {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+    font-size: 1rem; letter-spacing: 3px; padding: 13px 32px;
+    border: none; cursor: pointer; text-transform: uppercase;
+    clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+    transition: all .2s;
+  }
+  .btn-next, .btn-submit { background: var(--green); color: var(--dark); }
+  .btn-next:hover, .btn-submit:hover { background: var(--gold); }
+  .btn-prev { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); clip-path: none; }
+  .btn-prev:hover { color: var(--text); border-color: var(--green); }
+  .btn-submit { background: var(--gold); }
+
+  /* ─── SUCCESS ─── */
+  #successMsg {
+    display: none; text-align: center; padding: 60px 20px;
+  }
+  #successMsg .s-icon { font-size: 4rem; margin-bottom: 20px; }
+  #successMsg h2 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--green); margin-bottom: 10px; }
+  #successMsg p { color: var(--muted); font-size: 1rem; max-width: 480px; margin: 0 auto 28px; line-height: 1.7; }
+  .ref-box { display: inline-block; background: var(--surface); border: 1px solid var(--green); padding: 14px 28px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.3rem; letter-spacing: 3px; color: var(--green); }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--dark2); }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 22px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .contact-card .c-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .contact-card .c-lbl { font-size: .7rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .contact-card .c-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--green); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #020702;
+    border-top: 1px solid var(--border);
+    padding: 30px 5vw;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  footer .f-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--green); letter-spacing: 3px; }
+  footer .f-copy { font-size: .78rem; color: var(--muted); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  @media (max-width: 640px) {
+    .form-row, .form-row.triple { grid-template-columns: 1fr; }
+    .bank-detail-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .player-grid { grid-template-columns: 1fr; }
+    .step .step-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DPL 2026</div>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#prizes">Prizes</a></li>
+    <li><a href="#rules">Rules</a></li>
+    <li><a href="#venues">Venues</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#register" class="nav-cta">Register Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="hero-glow"></div>
+  <div style="position:relative;z-index:2;">
+    <div class="hero-badge">🎾 Tennis Ball Cricket · 2026 Edition</div>
+    <h1 class="hero-title">DINAMALAR<br><span>PREMIER</span><br>LEAGUE</h1>
+    <p class="hero-sub">DPL – 2026 · Season IV</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><div class="val">32</div><div class="lbl">Teams</div></div>
+      <div class="hero-meta-item"><div class="val">T20</div><div class="lbl">Format</div></div>
+      <div class="hero-meta-item"><div class="val">3</div><div class="lbl">Venues</div></div>
+      <div class="hero-meta-item"><div class="val">₹3L</div><div class="lbl">Prize Pool</div></div>
+    </div>
+    <div class="hero-btns">
+      <a href="#register" class="btn-primary">Register Your Team</a>
+      <a href="#overview" class="btn-outline">Learn More</a>
+    </div>
+    <p style="margin-top:24px;font-size:.85rem;color:var(--red);letter-spacing:1px;">🔥 Registration Last Date: 20th March 2026</p>
+  </div>
+  <div class="hero-scroll"><span></span><span></span></div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="sec-label">Tournament Details</div>
+  <div class="sec-title">TOURNAMENT <span>OVERVIEW</span></div>
+  <div class="sec-divider"></div>
+  <div class="overview-grid">
+    <div class="ov-card"><div class="icon">🎾</div><div class="label">Ball Type</div><div class="value">Tennis Ball (White)</div></div>
+    <div class="ov-card"><div class="icon">📅</div><div class="label">Match Period</div><div class="value">Apr 11 – May 11, 2026</div></div>
+    <div class="ov-card"><div class="icon">📋</div><div class="label">Format</div><div class="value">T20 – 20 Overs/Side</div></div>
+    <div class="ov-card"><div class="icon">🏢</div><div class="label">Eligibility</div><div class="value">Corporate Teams Only</div></div>
+    <div class="ov-card"><div class="icon">💰</div><div class="label">Pre-Qualifier Fee</div><div class="value big">₹15,000 <span style="font-size:.9rem;color:var(--muted);">+ GST</span></div></div>
+    <div class="ov-card"><div class="icon">💰</div><div class="label">Qualifier Fee</div><div class="value big">₹30,000 <span style="font-size:.9rem;color:var(--muted);">+ GST</span></div></div>
+    <div class="ov-card"><div class="icon">👥</div><div class="label">Squad Size</div><div class="value">15 Players + 1 Super Sub</div></div>
+    <div class="ov-card"><div class="icon">📆</div><div class="label">Match Days</div><div class="value">Weekends Only</div></div>
+  </div>
+</section>
+
+<!-- PRIZES -->
+<section id="prizes">
+  <div class="center">
+    <div class="sec-label">Awards</div>
+    <div class="sec-title">PRIZE <span>POOL</span></div>
+    <div class="sec-divider"></div>
+  </div>
+  <div class="prize-row">
+    <div class="prize-card winner">
+      <div class="trophy">🏆</div>
+      <div class="prize-lbl">Winner</div>
+      <div class="prize-val">₹2 Lakh</div>
+      <div class="prize-desc">Worth of Gifts & Trophy</div>
+    </div>
+    <div class="prize-card">
+      <div class="trophy">🥈</div>
+      <div class="prize-lbl">Runner-Up</div>
+      <div class="prize-val">₹1 Lakh</div>
+      <div class="prize-desc">Worth of Gifts & Trophy</div>
+    </div>
+    <div class="prize-card">
+      <div class="trophy">🎖️</div>
+      <div class="prize-lbl">Best Player</div>
+      <div class="prize-val">Special</div>
+      <div class="prize-desc">Individual Awards & Medals</div>
+    </div>
+    <div class="prize-card">
+      <div class="trophy">📰</div>
+      <div class="prize-lbl">All Participants</div>
+      <div class="prize-val">Cert + Medal</div>
+      <div class="prize-desc">T-Shirt + Certificate + Medal</div>
+    </div>
+  </div>
+</section>
+
+<!-- VENUES -->
+<section id="venues">
+  <div class="sec-label">Match Locations</div>
+  <div class="sec-title">VENUES</div>
+  <div class="sec-divider"></div>
+  <div class="venue-row">
+    <div class="venue-card"><div class="vnum">01</div><div class="vname">Whitefield Ground</div><div class="vloc">📍 Medavakam, Chennai</div></div>
+    <div class="venue-card"><div class="vnum">02</div><div class="vname">Wahe Guru Ground A</div><div class="vloc">📍 Kandigai, Chennai</div></div>
+    <div class="venue-card"><div class="vnum">03</div><div class="vname">Wahe Guru Ground B</div><div class="vloc">📍 Kandigai, Chennai</div></div>
+  </div>
+  <p style="margin-top:20px;font-size:.88rem;color:var(--muted);">📅 April 11th to May 11th · Every Weekend (Saturday & Sunday)</p>
+</section>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="sec-label">Regulations</div>
+  <div class="sec-title">RULES & <span>REGULATIONS</span></div>
+  <div class="sec-divider"></div>
+  <div class="rules-grid">
+    <div class="rule-block">
+      <h3>🎾 Match Format</h3>
+      <ul>
+        <li>T20 format – 20 overs per side</li>
+        <li>Max 4 overs per bowler</li>
+        <li>Minimum 5 different bowlers required</li>
+        <li>Powerplay: max 2 fielders outside circle (6 overs)</li>
+        <li>Super Over in case of tie</li>
+        <li>White tennis ball used across all matches</li>
+      </ul>
+    </div>
+    <div class="rule-block">
+      <h3>👔 Eligibility</h3>
+      <ul>
+        <li>Only corporate employees allowed</li>
+        <li>Valid employee ID must be submitted</li>
+        <li>Latest payslip/PF copy for verification</li>
+        <li>No contract/vendor/intern players allowed</li>
+        <li>Entry confirmed only upon full payment</li>
+        <li>Fake documents = immediate disqualification</li>
+      </ul>
+    </div>
+    <div class="rule-block">
+      <h3>👥 Team Rules</h3>
+      <ul>
+        <li>15-player squad registered at enrollment</li>
+        <li>11 players + 1 Super Sub per match</li>
+        <li>No new players in semi/final stages</li>
+        <li>Replacements only in league stage with approval</li>
+        <li>Background verification required for new players</li>
+        <li>New player must be verified 3 days before match</li>
+      </ul>
+    </div>
+    <div class="rule-block">
+      <h3>⏱️ Timing & Reporting</h3>
+      <ul>
+        <li>Captain/Vice-Captain report 30 min before</li>
+        <li>8+ players report 15 min before match</li>
+        <li>Over limit: 1 hr 20 min + 5 min grace</li>
+        <li>Late over = fielding restrictions, 5 inside 30-yard</li>
+        <li>Next batsman must enter within 90 seconds</li>
+        <li>Between overs: 60 seconds only</li>
+      </ul>
+    </div>
+    <div class="rule-block">
+      <h3>👕 Attire</h3>
+      <ul>
+        <li>Dinamalar sponsored jersey mandatory</li>
+        <li>Black/dark track pants preferred</li>
+        <li>White pants NOT allowed for bowlers</li>
+        <li>Proper sports shoes required</li>
+        <li>Spike shoes strictly not allowed</li>
+        <li>Helmet mandatory for batsmen & keeper</li>
+      </ul>
+    </div>
+    <div class="rule-block">
+      <h3>⚡ No-Ball & Extras</h3>
+      <ul>
+        <li>Free-hit after every no-ball</li>
+        <li>Byes & leg-byes allowed</li>
+        <li>Mankad allowed without warning</li>
+        <li>Penalty runs for late overs/misconduct</li>
+        <li>Umpire decision is final</li>
+        <li>Misconduct = ban from future tournaments</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTRATION -->
+<section id="register">
+  <div class="reg-container">
+    <div class="sec-label">Join the League</div>
+    <div class="sec-title">TEAM <span>REGISTRATION</span></div>
+    <div class="sec-divider"></div>
+
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step active" data-step="1"><span class="snum">01</span><span class="step-text">Team Info</span></div>
+      <div class="step" data-step="2"><span class="snum">02</span><span class="step-text">Captain</span></div>
+      <div class="step" data-step="3"><span class="snum">03</span><span class="step-text">Players</span></div>
+      <div class="step" data-step="4"><span class="snum">04</span><span class="step-text">Payment</span></div>
+    </div>
+
+    <form id="regForm" novalidate>
+
+      <!-- PAGE 1: TEAM INFO -->
+      <div class="form-page active" id="page1">
+        <div class="form-section-title">Team Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Team Name <span class="req">*</span></label>
+            <input type="text" id="teamName" placeholder="e.g. Infosys Strikers" required>
+          </div>
+          <div class="form-group">
+            <label>Company / Organisation <span class="req">*</span></label>
+            <input type="text" id="company" placeholder="e.g. Infosys Limited" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="Chennai" required>
+          </div>
+          <div class="form-group">
+            <label>Preferred Venue <span class="req">*</span></label>
+            <select id="venue" required>
+              <option value="">Select Venue</option>
+              <option>Whitefield – Medavakam</option>
+              <option>Wahe Guru A – Kandigai</option>
+              <option>Wahe Guru B – Kandigai</option>
+              <option>Any Available</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Participation Stage <span class="req">*</span></label>
+            <select id="stage" required>
+              <option value="">Select Stage</option>
+              <option>Pre-Qualifier (₹15,000 + GST)</option>
+              <option>Direct Qualifier (₹30,000 + GST)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Jersey Color Preference</label>
+            <input type="text" id="jersey" placeholder="e.g. Blue & White">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>How did you hear about DPL?</label>
+          <select id="source">
+            <option value="">Select</option>
+            <option>Dinamalar Newspaper</option>
+            <option>Social Media</option>
+            <option>Friend / Colleague</option>
+            <option>Previous Season</option>
+            <option>Website</option>
+          </select>
+        </div>
+        <div class="form-nav">
+          <span></span>
+          <button type="button" class="btn-next" onclick="goToPage(2)">Next: Captain Details →</button>
+        </div>
+      </div>
+
+      <!-- PAGE 2: CAPTAIN INFO -->
+      <div class="form-page" id="page2">
+        <div class="form-section-title">Captain Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Captain Full Name <span class="req">*</span></label>
+            <input type="text" id="capName" placeholder="Full name as per ID" required>
+          </div>
+          <div class="form-group">
+            <label>Designation <span class="req">*</span></label>
+            <input type="text" id="capDesg" placeholder="e.g. Software Engineer" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number <span class="req">*</span></label>
+            <input type="tel" id="capMobile" placeholder="10-digit number" maxlength="10" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" id="capEmail" placeholder="captain@company.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Employee ID <span class="req">*</span></label>
+            <input type="text" id="capEmpId" placeholder="Company employee ID" required>
+          </div>
+          <div class="form-group">
+            <label>Date of Birth <span class="req">*</span></label>
+            <input type="date" id="capDob" required>
+          </div>
+        </div>
+
+        <div class="form-section-title" style="margin-top:28px;">Vice-Captain Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vice-Captain Full Name <span class="req">*</span></label>
+            <input type="text" id="vcName" placeholder="Full name" required>
+          </div>
+          <div class="form-group">
+            <label>Mobile Number <span class="req">*</span></label>
+            <input type="tel" id="vcMobile" placeholder="10-digit number" maxlength="10" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" id="vcEmail" placeholder="vice@company.com" required>
+          </div>
+          <div class="form-group">
+            <label>Employee ID <span class="req">*</span></label>
+            <input type="text" id="vcEmpId" placeholder="Company employee ID" required>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-prev" onclick="goToPage(1)">← Back</button>
+          <button type="button" class="btn-next" onclick="goToPage(3)">Next: Squad List →</button>
+        </div>
+      </div>
+
+      <!-- PAGE 3: PLAYERS -->
+      <div class="form-page" id="page3">
+        <div class="form-section-title">Squad Registration (Minimum 11 Players)</div>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:20px;">Register up to 15 players + 1 Super Sub. All players must be employees of your organization.</p>
+
+        <div class="player-grid" id="playerGrid"></div>
+
+        <button type="button" onclick="addPlayer()" style="margin-top:14px;background:transparent;border:1px dashed var(--green);color:var(--green);padding:10px 20px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:2px;font-size:.9rem;text-transform:uppercase;width:100%;">
+          + Add Another Player
+        </button>
+
+        <div class="form-nav" style="margin-top:30px;">
+          <button type="button" class="btn-prev" onclick="goToPage(2)">← Back</button>
+          <button type="button" class="btn-next" onclick="goToPage(4)">Next: Payment →</button>
+        </div>
+      </div>
+
+      <!-- PAGE 4: PAYMENT / BANK -->
+      <div class="form-page" id="page4">
+        <div class="form-section-title">Fee Summary</div>
+
+        <div class="fee-summary" id="feeSummary">
+          <div class="fee-row"><span class="lbl">Registration Stage</span><span class="val" id="feeStageLabel">Pre-Qualifier</span></div>
+          <div class="fee-row"><span class="lbl">Base Entry Fee</span><span class="val" id="feeBase">₹15,000</span></div>
+          <div class="fee-row"><span class="lbl">GST (18%)</span><span class="val" id="feeGst">₹2,700</span></div>
+          <div class="fee-row"><span class="lbl">Total Amount Due</span><span class="val" id="feeTotal">₹17,700</span></div>
+        </div>
+
+        <div class="form-section-title">Bank Transfer Details</div>
+        <div class="bank-box">
+          <div class="bank-title">🏦 Transfer Entry Fee to This Account</div>
+          <div class="bank-detail-grid">
+            <div class="bd-item"><div class="bd-lbl">Account Name</div><div class="bd-val">DPL Sports Events Pvt Ltd</div></div>
+            <div class="bd-item"><div class="bd-lbl">Account Number</div><div class="bd-val">1234 5678 9012 3456</div></div>
+            <div class="bd-item"><div class="bd-lbl">IFSC Code</div><div class="bd-val">HDFC0001234</div></div>
+            <div class="bd-item"><div class="bd-lbl">Bank Name</div><div class="bd-val">HDFC Bank</div></div>
+            <div class="bd-item"><div class="bd-lbl">Branch</div><div class="bd-val">Anna Nagar, Chennai</div></div>
+            <div class="bd-item"><div class="bd-lbl">Account Type</div><div class="bd-val">Current Account</div></div>
+          </div>
+          <div class="bank-notice">
+            <strong>📋 Important:</strong> After transferring the fee, upload the payment screenshot below and enter the transaction reference number. Your registration will be confirmed only after payment verification by our team. Please use <strong>Team Name + DPL2026</strong> as the transfer remarks.
+          </div>
+        </div>
+
+        <div class="form-section-title" style="margin-top:28px;">Upload Payment Proof</div>
+        <div class="upload-box" onclick="document.getElementById('payProof').click()">
+          <div class="up-icon">📎</div>
+          <div class="up-text">Click to upload <span>payment screenshot</span> or bank receipt</div>
+          <div class="up-text" style="font-size:.75rem;margin-top:4px;">JPG, PNG or PDF · Max 5MB</div>
+          <input type="file" id="payProof" accept=".jpg,.jpeg,.png,.pdf" onchange="showFileName(this)">
+        </div>
+        <p id="fileName" style="font-size:.8rem;color:var(--green);margin-top:8px;display:none;"></p>
+
+        <div class="form-row" style="margin-top:20px;">
+          <div class="form-group">
+            <label>Transaction / UTR Reference No. <span class="req">*</span></label>
+            <input type="text" id="txnRef" placeholder="e.g. HDFC123456789012" required>
+            <div class="hint">Found in your bank SMS/app after transfer</div>
+          </div>
+          <div class="form-group">
+            <label>Date of Payment <span class="req">*</span></label>
+            <input type="date" id="payDate" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Notes / Special Requests</label>
+          <textarea id="notes" placeholder="Any special requirements, accessibility needs, or queries..."></textarea>
+        </div>
+
+        <div style="margin:20px 0;padding:16px;background:rgba(0,230,118,.06);border:1px solid var(--border);font-size:.82rem;color:var(--muted);line-height:1.7;">
+          <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--text);">
+            <input type="checkbox" id="agreeTerms" style="width:auto;flex-shrink:0;margin-top:2px;"> 
+            I confirm that all players are employees of our organization, agree to DPL rules & regulations, and understand that registration is confirmed only upon payment verification. <span class="req">*</span>
+          </label>
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-prev" onclick="goToPage(3)">← Back</button>
+          <button type="button" class="btn-submit" onclick="submitForm()">Submit Registration ✓</button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- SUCCESS -->
+    <div id="successMsg">
+      <div class="s-icon">🏆</div>
+      <h2>Registration Submitted!</h2>
+      <p>Thank you for registering with <strong id="successTeam"></strong>. Our team will verify your payment within 24–48 hours and confirm your spot via email & SMS.</p>
+      <div class="ref-box" id="refNum"></div>
+      <p style="margin-top:20px;font-size:.8rem;">Questions? Call us: <a href="tel:+917338820176" style="color:var(--green);">73388 20176</a> or <a href="tel:+919940612084" style="color:var(--green);">99406 12084</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="center">
+    <div class="sec-label">Get in Touch</div>
+    <div class="sec-title">CONTACT <span>US</span></div>
+    <div class="sec-divider"></div>
+  </div>
+  <div class="contact-grid" style="max-width:900px;margin:0 auto;">
+    <div class="contact-card"><div class="c-icon">📞</div><div class="c-lbl">Phone 1</div><div class="c-val"><a href="tel:+917338820176" style="color:inherit;text-decoration:none;">73388 20176</a></div></div>
+    <div class="contact-card"><div class="c-icon">📞</div><div class="c-lbl">Phone 2</div><div class="c-val"><a href="tel:+919940612084" style="color:inherit;text-decoration:none;">99406 12084</a></div></div>
+    <div class="contact-card"><div class="c-icon">✉️</div><div class="c-lbl">Email</div><div class="c-val" style="font-size:.9rem;">monishraj@dinamalar.in</div></div>
+    <div class="contact-card"><div class="c-icon">📍</div><div class="c-lbl">Location</div><div class="c-val">Chennai, Tamil Nadu</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">DPL 2026</div>
+  <div class="f-copy">© 2026 Dinamalar Premier League. All Rights Reserved.</div>
+</footer>
+
+<script>
+  // ─── PLAYER MANAGEMENT ───
+  let playerCount = 0;
+
+  function addPlayer(role) {
+    if (playerCount >= 16) { alert('Maximum 15 players + 1 Super Sub allowed.'); return; }
+    playerCount++;
+    const grid = document.getElementById('playerGrid');
+    const isSuper = playerCount === 16;
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.id = 'pc_' + playerCount;
+    card.innerHTML = `
+      <div class="pc-head">
+        <span>Player ${playerCount}</span>
+        <span class="player-role-badge">${isSuper ? 'Super Sub' : 'Batsman'}</span>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <input type="text" placeholder="Full Name" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-size:.82rem;width:100%;outline:none;" required>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input type="text" placeholder="Employee ID" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:7px 10px;font-size:.78rem;outline:none;width:100%;">
+        <select style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:7px 8px;font-size:.78rem;outline:none;width:100%;">
+          <option>Batsman</option><option>Bowler</option><option>All-Rounder</option><option>Wicket Keeper</option>
+        </select>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+
+  // Init 11 players
+  for (let i = 0; i < 11; i++) addPlayer();
+
+  // ─── STEP NAVIGATION ───
+  function goToPage(n) {
+    // Basic validation for page 1
+    if (n === 2) {
+      const teamName = document.getElementById('teamName').value.trim();
+      const company = document.getElementById('company').value.trim();
+      const venue = document.getElementById('venue').value;
+      const stage = document.getElementById('stage').value;
+      if (!teamName || !company || !venue || !stage) {
+        alert('Please fill in all required fields before proceeding.');
+        return;
+      }
+    }
+    if (n === 3) {
+      const capName = document.getElementById('capName').value.trim();
+      const capMobile = document.getElementById('capMobile').value.trim();
+      const capEmail = document.getElementById('capEmail').value.trim();
+      if (!capName || !capMobile || !capEmail) {
+        alert('Please fill in Captain details before proceeding.');
+        return;
+      }
+    }
+    if (n === 4) {
+      updateFee();
+    }
+
+    document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+
+    document.querySelectorAll('.step').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i + 1 < n) s.classList.add('done');
+      if (i + 1 === n) s.classList.add('active');
+    });
+
+    document.getElementById('register').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function updateFee() {
+    const stage = document.getElementById('stage').value;
+    const isQual = stage.includes('Direct Qualifier');
+    const base = isQual ? 30000 : 15000;
+    const gst = Math.round(base * 0.18);
+    const total = base + gst;
+    document.getElementById('feeStageLabel').textContent = isQual ? 'Direct Qualifier' : 'Pre-Qualifier';
+    document.getElementById('feeBase').textContent = '₹' + base.toLocaleString('en-IN');
+    document.getElementById('feeGst').textContent = '₹' + gst.toLocaleString('en-IN');
+    document.getElementById('feeTotal').textContent = '₹' + total.toLocaleString('en-IN');
+  }
+
+  function showFileName(input) {
+    const p = document.getElementById('fileName');
+    if (input.files.length > 0) {
+      p.textContent = '✓ Uploaded: ' + input.files[0].name;
+      p.style.display = 'block';
+    }
+  }
+
+  function submitForm() {
+    const txn = document.getElementById('txnRef').value.trim();
+    const payDate = document.getElementById('payDate').value;
+    const agree = document.getElementById('agreeTerms').checked;
+
+    if (!txn || !payDate) { alert('Please enter the Transaction Reference Number and Payment Date.'); return; }
+    if (!agree) { alert('Please agree to the terms and conditions to proceed.'); return; }
+
+    // Hide form, show success
+    document.getElementById('regForm').style.display = 'none';
+    document.getElementById('stepIndicator').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+
+    const teamName = document.getElementById('teamName').value || 'Your Team';
+    const ref = 'DPL-2026-' + Math.random().toString(36).substr(2,8).toUpperCase();
+    document.getElementById('successTeam').textContent = teamName;
+    document.getElementById('refNum').textContent = 'Reference: ' + ref;
+  }
+
+  // Smooth scroll for nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
